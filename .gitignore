@@ -1,0 +1,11 @@
+# Ignore the virtual environment
+.venv/
+venv/
+
+# Ignore detectron2 folder
+detectron2/
+
+# Ignore other system files
+__pycache__/
+*.pyc
+*.pyo
