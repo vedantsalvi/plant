@@ -1,1 +1,1 @@
-web: python detectron2install.py && python download_weights.py && gunicorn app:app
+web: python pip install --upgrade pip && python detectron2install.py && python download_weights.py && gunicorn app:app
