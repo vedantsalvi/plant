@@ -1,5 +1,6 @@
 Flask==2.0.3
-torch==1.10.0+cu113  # or your specific version of PyTorch
+torch==1.10.0
+ # or your specific version of PyTorch
 torchvision==0.11.0+cu113  # corresponding to your PyTorch version
 opencv-python==4.5.3.56
 numpy==1.21.2
