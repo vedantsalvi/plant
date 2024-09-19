@@ -1,8 +1,8 @@
 import gdown
 import os
 
-# Google Drive file ID (Extracted from shareable link)
-file_id = "your_file_id"
+# Google Drive file ID
+file_id = "1-SFDWKaSUwcsnPg8STLRZxI_gqNEWDzU"
 output_dir = "detectron2_model"
 output_file = os.path.join(output_dir, "model_final.pth")
 
