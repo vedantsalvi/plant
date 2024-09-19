@@ -69,6 +69,41 @@ def predict():
         "predicted_classes": [class_names[int(cls)] for cls in pred_classes.tolist()],
         "num_classes": len(class_names)
     }
+
+    # Calculate and print the mask areas
+    try:
+        leaf_index = (pred_classes == 0).nonzero(as_tuple=True)[0]
+        blight_index = (pred_classes == 1).nonzero(as_tuple=True)[0]
+
+        leaf_mask = instances.pred_masks[leaf_index]
+        blight_mask = instances.pred_masks[blight_index]
+
+        leaf_mask_np = leaf_mask[0].cpu().numpy()
+        leaf_area = leaf_mask_np.sum()
+
+        blight_mask_np = blight_mask[0].cpu().numpy() if len(blight_mask) > 0 else np.zeros_like(leaf_mask_np)
+        blight_area = blight_mask_np.sum()
+
+        infec = blight_area / leaf_area if leaf_area > 0 else 0
+
+        # Determine the infection status
+        if infec > 0.02 and infec < 0.15:
+            status = "Early Blight"
+        elif infec >= 0.15:
+            status = "Late Blight"
+        elif infec < 0.01:
+            status = "Healthy"
+        else:
+            status = "Unknown"
+
+        # Add these details to the results (convert values to standard Python types)
+        results["leaf_area"] = int(leaf_area)
+        results["blight_area"] = int(blight_area)
+        results["infection_rate"] = float(infec)
+        results["infection_status"] = status
+
+    except Exception as e:
+        results["error"] = f"Error calculating areas: {str(e)}"
     
     # Visualize the predictions
     v = Visualizer(im[:, :, ::-1],
@@ -81,7 +116,14 @@ def predict():
     vis_path = os.path.join('static/uploads/', 'visualization.jpg')
     cv2.imwrite(vis_path, out.get_image()[:, :, ::-1])
 
+    # Construct URL for visualization
+    vis_url = f"/static/uploads/visualization.jpg"
+
+    results["visualization_url"] = vis_url
+
     return jsonify(results), 200
 
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)
+

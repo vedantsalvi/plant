@@ -1,0 +1,1 @@
+web: python detectron2install.py && python download_weights.py && gunicorn app:app
